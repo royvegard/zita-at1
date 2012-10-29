@@ -52,6 +52,7 @@ extern X_textln_style tstyle1;
 extern XImage    *notesect_img;
 extern XImage    *ctrlsect_img;
 extern XImage    *redzita_img;
+extern XImage    *sm_img;
 extern ButtonImg  b_midi_img;
 extern ButtonImg  b_note_img;
 extern RotaryImg  r_tune_img;

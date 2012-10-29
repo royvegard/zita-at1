@@ -32,6 +32,7 @@ X_textln_style tstyle1;
 XImage    *notesect_img;
 XImage    *ctrlsect_img;
 XImage    *redzita_img;
+XImage    *sm_img;
 
 ButtonImg  b_note_img;
 ButtonImg  b_midi_img;
@@ -59,15 +60,16 @@ void styles_init (X_display *disp, X_resman *xrm)
     notesect_img = png2img (SHARED"/notesect.png", disp, XftColors [C_MAIN_BG]);
     ctrlsect_img = png2img (SHARED"/ctrlsect.png", disp, XftColors [C_MAIN_BG]);
     redzita_img  = png2img (SHARED"/redzita.png",  disp, XftColors [C_MAIN_BG]); 
+    sm_img       = png2img (SHARED"/sm.png",       disp, XftColors [C_MAIN_BG]);
     Tmeter::_scale = png2img (SHARED"/hscale.png",  disp, XftColors [C_MAIN_BG]);
     Tmeter::_imag0 = png2img (SHARED"/hmeter0.png", disp, XftColors [C_MAIN_BG]);
     Tmeter::_imag1 = png2img (SHARED"/hmeter1.png", disp, XftColors [C_MAIN_BG]);
 
     if (   !notesect_img || !ctrlsect_img || !redzita_img
-	|| !Tmeter::_scale || !Tmeter::_imag0 || !Tmeter::_imag1) 
+        || !Tmeter::_scale || !Tmeter::_imag0 || !Tmeter::_imag1)
     {
-	fprintf (stderr, "Can't load images from '%s'.\n", SHARED);
-	exit (1);
+        fprintf (stderr, "Can't load images from '%s'.\n", SHARED);
+        exit (1);
     }
 
     b_midi_img._backg = XftColors [C_MAIN_BG];
@@ -154,6 +156,7 @@ void styles_fini (X_display *disp)
     XDestroyImage (notesect_img);
     XDestroyImage (ctrlsect_img);
     XDestroyImage (redzita_img);
+    XDestroyImage (sm_img);
     XDestroyImage (b_midi_img._ximage);
     XDestroyImage (b_note_img._ximage);
     XDestroyImage (Tmeter::_scale);

@@ -32,7 +32,7 @@ int PushButton::_button = 0;
 PushButton::PushButton (X_window     *parent,
                         X_callback   *cbobj,
                         ButtonImg    *image,
-		        int  xp,
+                        int  xp,
                         int  yp,
                         int  cbind) :
 
@@ -69,19 +69,19 @@ void PushButton::handle_event (XEvent *E)
     switch (E->type)
     {
     case Expose:
-	render ();
-	break;  
+        render ();
+        break;
  
     case ButtonPress:
-	bpress ((XButtonEvent *) E);
-	break;  
+        bpress ((XButtonEvent *) E);
+        break;
 
     case ButtonRelease:
-	brelse ((XButtonEvent *) E);
-	break;
+        brelse ((XButtonEvent *) E);
+        break;
 
     default: 
-	fprintf (stderr, "PushButton: event %d\n", E->type );
+        fprintf (stderr, "PushButton: event %d\n", E->type );
     }
 }
 
@@ -120,7 +120,7 @@ void PushButton::set_state (int s)
 {
     if (_state != s)
     {
-        _state = s;	
+        _state = s;
         render ();
     }
 }

@@ -33,7 +33,7 @@ Jclient::Jclient (const char *jname, const char *jserv) :
     _active (false),
     _jname (0)
 {
-    init_jack (jname, jserv);  
+    init_jack (jname, jserv);
 }
 
 
@@ -70,7 +70,7 @@ void Jclient::init_jack (const char *jname, const char *jserv)
     _ainp_port = jack_port_register (_jack_client, "in",  JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput,  0);
     _aout_port = jack_port_register (_jack_client, "out", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
     _midi_port = jack_port_register (_jack_client, "pitch", JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0);
-	
+
     _retuner = new Retuner (_fsamp);
     _notemask = 0xFFF;
     clr_midimask ();
@@ -89,7 +89,7 @@ void Jclient::close_jack ()
 
 void Jclient::jack_static_shutdown (void *arg)
 {
-    ((Jclient *) arg)->jack_shutdown ();    
+    ((Jclient *) arg)->jack_shutdown ();
 }
 
 
@@ -124,30 +124,30 @@ void Jclient::midi_process (int nframes)
     i = 0;
     while (jack_midi_event_get (&E, p, i) == 0)
     {
-	t = E.buffer [0];
+        t = E.buffer [0];
         n = E.buffer [1];
-	v = E.buffer [2];
-	switch (t & 0xF0)
-	{
-	case 0x80:
-	case 0x90:
-	    if (v && (t & 0x10))
-	    {
-		_notes [n % 12] += 1;
-	    }
-	    else
-	    {
-		_notes [n % 12] -= 1;
-	    }
-	    break;
-	}
-	i++;
+        v = E.buffer [2];
+        switch (t & 0xF0)
+        {
+        case 0x80:
+        case 0x90:
+            if (v && (t & 0x10))
+            {
+                _notes [n % 12] += 1;
+            }
+            else
+            {
+                _notes [n % 12] -= 1;
+            }
+            break;
+        }
+        i++;
     }
-	
+
     _midimask = 0;
     for (i = 0, b = 1; i < 12; i++, b <<= 1) 
     {
-	if (_notes [i]) _midimask |= b;
+        if (_notes [i]) _midimask |= b;
     }
 }
 

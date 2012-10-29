@@ -213,9 +213,9 @@ int Retuner::process (int nfram, float *inp, float *out)
             while (k--)
             {
                 i = (int) r1;
-		u1 = cubic (_ipbuff + i, r1 - i);
+                u1 = cubic (_ipbuff + i, r1 - i);
                 i = (int) r2;
-		u2 = cubic (_ipbuff + i, r2 - i);
+                u2 = cubic (_ipbuff + i, r2 - i);
                 v = _xffunc [fi++];
                 *out++ = (1 - v) * u1 + v * u2;
                 r1 += dr;
@@ -231,7 +231,7 @@ int Retuner::process (int nfram, float *inp, float *out)
             while (k--)
             {
                 i = (int) r1;
-		*out++ = cubic (_ipbuff + i, r1 - i);
+                *out++ = cubic (_ipbuff + i, r1 - i);
                 r1 += dr;
                 if (r1 >= _ipsize) r1 -= _ipsize;
             }
@@ -439,5 +439,5 @@ float Retuner::cubic (float *v, float a)
     b = 1 - a;
     c = a * b;
     return (1.0f + 1.5f * c) * (v[1] * b + v[2] * a)
-	    - 0.5f * c * (v[0] * b + v[1] + v[2] + v[3] * a);
+            - 0.5f * c * (v[0] * b + v[1] + v[2] + v[3] * a);
 }

@@ -18,7 +18,7 @@
 
 
 #ifndef __TMETER_H
-#define	__TMETER_H
+#define        __TMETER_H
 
 
 #include <clxclient.h>

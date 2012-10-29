@@ -20,7 +20,7 @@
 
 
 #ifndef __BUTTON_H
-#define	__BUTTON_H
+#define        __BUTTON_H
 
 
 #include <cairo/cairo.h>
@@ -48,8 +48,8 @@ public:
 
     PushButton (X_window    *parent,
                 X_callback  *cbobj,
-		ButtonImg   *image,
-	        int xp,
+                ButtonImg   *image,
+                int xp,
                 int yp,
                 int cbind = 0);
 

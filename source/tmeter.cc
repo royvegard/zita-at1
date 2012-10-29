@@ -46,8 +46,8 @@ void Tmeter::handle_event (XEvent *E)
     switch (E->type)
     {
     case Expose:
-	expose ((XExposeEvent *) E);
-	break;  
+        expose ((XExposeEvent *) E);
+        break;
     }
 }
 
