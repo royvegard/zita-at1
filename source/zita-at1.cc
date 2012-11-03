@@ -77,8 +77,8 @@ int main (int ac, char *av [])
     X_rootwin     *rootwin;
     int           ev, xp, yp, xs, ys;
     char          *nsm_url;
-    char          program_name [32] = PROGNAME;
-    char          state_file [1024] ="";
+    string        program_name = PROGNAME;
+    string        state_file ="";
     bool          managed = false;
 
     nsm_url = getenv("NSM_URL");
@@ -88,7 +88,7 @@ int main (int ac, char *av [])
         nsm = new NSM_Client;
         if (!nsm->init(nsm_url))
         {
-            nsm->announce("zita-at1", ":dirty:", av[0]);
+            nsm->announce(program_name.c_str(), ":dirty:", av[0]);
             do
             {
                 nsm->check ();
@@ -100,8 +100,9 @@ int main (int ac, char *av [])
                 nsm->check ();
                 usleep(10);
             } while (!nsm->client_id());
-            sprintf(program_name, "%s", nsm->client_id ());
-            sprintf(state_file, "%s.conf", nsm->client_path ());
+            program_name = nsm->client_id ();
+            state_file = nsm->client_path ();
+            state_file += ".conf";
         }
         else
         {
@@ -110,7 +111,7 @@ int main (int ac, char *av [])
         }
     }
 
-    xresman.init (&ac, av, CP program_name, options, NOPTS);
+    xresman.init (&ac, av, CP program_name.c_str(), options, NOPTS);
     if (xresman.getb (".help", 0)) help ();
             
     display = new X_display (xresman.get (".display", 0));
@@ -143,7 +144,6 @@ int main (int ac, char *av [])
     if (managed)
     {
         mainwin->set_statefile (state_file);
-        printf("statefile: %s\n", state_file);
         mainwin->load_state ();
     }
 

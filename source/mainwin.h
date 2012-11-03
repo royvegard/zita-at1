@@ -23,12 +23,15 @@
 #define __MAINWIN_H
 
 
+#include <string>
 #include <clxclient.h>
 #include "guiclass.h"
 #include "jclient.h"
 #include "tmeter.h"
 #include "global.h"
 
+
+using namespace std;
 
 class Mainwin : public A_thread, public X_window, public X_callback
 {
@@ -46,7 +49,7 @@ public:
     void load_state (void);
     void save_state (void);
     void set_managed (bool);
-    void set_statefile (const char *s) { sprintf(_statefile, "%s", s); }
+    void set_statefile (const string s) { _statefile = s; }
 
 private:
 
@@ -76,7 +79,7 @@ private:
     Tmeter         *_tmeter;
     X_textip       *_textln;
     int             _ttimer;
-    char            _statefile [1024];
+    string          _statefile;
     bool            _dirty;
     bool            _managed;
 };

@@ -237,11 +237,11 @@ namespace NSM
         nsm->_nsm_client_id = strdup( &argv[2]->s );
         nsm->_nsm_client_path = strdup( &argv[0]->s );
 
-        /*int r = ((NSM::Client*)user_data)->command_open( &argv[0]->s, &argv[1]->s, &argv[2]->s, &out_msg);
+        int r = ((NSM::Client*)user_data)->command_open( &argv[0]->s, &argv[1]->s, &argv[2]->s, &out_msg);
         
         if ( r )
             OSC_REPLY_ERR( r, ( out_msg ? out_msg : "") );
-        else*/
+        else
             OSC_REPLY( "OK" );
 
         if ( out_msg )

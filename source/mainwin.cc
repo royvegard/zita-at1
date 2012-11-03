@@ -19,6 +19,8 @@
 // ----------------------------------------------------------------------
 
 
+#include <fstream>
+#include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -33,6 +35,7 @@ Mainwin::Mainwin (X_rootwin *parent, X_resman *xres, int xp, int yp, Jclient *jc
     A_thread ("Main"),
     X_window (parent, xp, yp, XSIZE, YSIZE, XftColors [C_MAIN_BG]->pixel),
     _stop (false),
+    _ambis (false),
     _xres (xres),
     _jclient (jclient),
     _dirty (false),
@@ -257,6 +260,12 @@ void Mainwin::handle_callb (int type, X_window *W, XEvent *E)
         }
         break;
     }
+
+    if (!_dirty)
+    {
+        if (nsm) nsm->is_dirty ();
+        _dirty = true;
+    }
 }
 
 
@@ -301,12 +310,11 @@ void Mainwin::redraw (void)
 
 void Mainwin::load_state ()
 {
-    FILE * File;
-    File = fopen (_statefile, "r");
+    ifstream statefile(_statefile.c_str());
 
-    if (File != NULL)
+    if (statefile.is_open())
     {
-        char parameter [20];
+        string parameter;
         float  tune = 0.0f;
         float  bias = 0.0f;
         float  filt = 0.0f;
@@ -315,18 +323,46 @@ void Mainwin::load_state ()
         int   notes = 0xFFF;
         int      xp = 100;
         int      yp = 100;
-        int i, k;
+        int i;
 
-        fscanf (File, "%s %f %s %f %s %f %s %f %s %f %s %X %s %d %s %d",
-                parameter, &tune,
-                parameter, &bias,
-                parameter, &filt,
-                parameter, &corr,
-                parameter, &offs,
-                parameter, &notes,
-                parameter, &xp,
-                parameter, &yp);
-        fclose (File);
+        while (!statefile.eof())
+        {
+            statefile >> parameter;
+            if (parameter == "/autotune/tune")
+            {
+                statefile >> dec >> tune;
+            }
+            else if (parameter == "/autotune/bias")
+            {
+                statefile >> dec >> bias;
+            }
+            else if (parameter == "/autotune/filt")
+            {
+                statefile >> dec >> filt;
+            }
+            else if (parameter == "/autotune/corr")
+            {
+                statefile >> dec >> corr;
+            }
+            else if (parameter == "/autotune/offs")
+            {
+                statefile >> dec >> offs;
+            }
+            else if (parameter == "/autotune/notes")
+            {
+                statefile >> hex >> notes;
+            }
+            else if (parameter == "/window/x")
+            {
+                statefile >> dec >> xp;
+            }
+            else if (parameter == "/window/y")
+            {
+                statefile >> dec >> yp;
+            }
+        }
+
+        statefile.close();
 
         _rotary [R_TUNE]->set_value (tune);
         _jclient->retuner ()->set_refpitch (_rotary [R_TUNE]->value ());
@@ -338,13 +374,15 @@ void Mainwin::load_state ()
         _jclient->retuner ()->set_corrgain (_rotary [R_CORR]->value ());
         _rotary [R_OFFS]->set_value (offs);
         _jclient->retuner ()->set_corroffs (_rotary [R_OFFS]->value ());
+
+        _notes = notes;
+        _jclient->set_notemask (_notes);
+
         for (i = 0; i < 12; i++)
         {
             _bnote [i]->set_state (1 * (0x1 & notes));
             notes >>= 1;
         }
-        _notes = notes;
-        _jclient->set_notemask (_notes);
         x_move (xp, yp);
         redraw ();
     }
@@ -353,10 +391,9 @@ void Mainwin::load_state ()
 
 void Mainwin::save_state (void)
 {
-    FILE * File;
-    File = fopen (_statefile, "w");
+    ofstream statefile(_statefile.c_str());
 
-    if (File != NULL)
+    if (statefile.is_open())
     {
         float tune = _rotary [R_TUNE]->value ();
         float bias = _rotary [R_BIAS]->value ();
@@ -365,9 +402,12 @@ void Mainwin::save_state (void)
         float offs = _rotary [R_OFFS]->value ();
         int  notes = _notes;
 
-        fprintf (File, "/autotune/tune\t%f\n/autotune/bias\t%f\n", tune, bias);
-        fprintf (File, "/autotune/filt\t%f\n/autotune/corr\t%f\n", filt, corr);
-        fprintf (File, "/autotune/offs\t%f\n/autotune/notes\t%X\n", offs, notes);
+        statefile << "/autotune/tune\t"  << dec << tune  << endl;
+        statefile << "/autotune/bias\t"  << dec << bias  << endl;
+        statefile << "/autotune/filt\t"  << dec << filt  << endl;
+        statefile << "/autotune/corr\t"  << dec << corr  << endl;
+        statefile << "/autotune/offs\t"  << dec << offs  << endl;
+        statefile << "/autotune/notes\t" << hex << notes << endl;
 
         Window w_return;
         int x_s, y_s, x, y;
@@ -379,8 +419,11 @@ void Mainwin::save_state (void)
         XTranslateCoordinates (dpy (), win (), pwin ()->win (),
                                -x, -y, &x_s, &y_s, &w_return);
 
-        fprintf(File, "/window/x\t%d\n/window/y\t%d\n", x_s, y_s);
-        fclose (File);
+        statefile << "/window/x\t" << dec << x_s << endl;
+        statefile << "/window/y\t" << dec << y_s << endl;
+
+        statefile.close();
+
         _dirty = false;
         if (nsm) nsm->is_clean();
     }

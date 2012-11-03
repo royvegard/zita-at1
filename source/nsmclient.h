@@ -88,7 +88,7 @@ namespace NSM
     protected:
 
         /* Server->Client methods */
-        //virtual int command_open ( const char *name, const char *display_name, const char *client_id, char **out_msg ) = 0;
+        virtual int command_open ( const char *name, const char *display_name, const char *client_id, char **out_msg ) = 0;
         virtual int command_save ( char **out_msg ) = 0;
 
         virtual void command_active ( bool ) { }

@@ -43,7 +43,7 @@ NSM_Client::command_save(char **out_msg)
     return r;
 }
 
-/*int
+int
 NSM_Client::command_open(const char *name,
                          const char *display_name,
                          const char *client_id,
@@ -57,4 +57,4 @@ void
 NSM_Client::command_active(bool active)
 {
     ;
-}*/
+}

@@ -30,12 +30,12 @@ class NSM_Client:public NSM::Client
 
     protected:
 
-        /*int command_open(const char *name,
+        int command_open(const char *name,
                          const char *display_name,
                          const char *client_id,
-                         char **out_msg);*/
+                         char **out_msg);
         int command_save(char **out_msg);
 
-        //void command_active(bool active);
+        void command_active(bool active);
 };
 
